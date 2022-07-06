@@ -10,7 +10,7 @@ import (
 const (
 	DB_USER     = "postgres"
 	DB_PASSWORD = "password2"
-	DB_NAME     = "go_api"
+	DB_NAME     = "api_perpustakaan"
 )
 
 func SetupDB() *sql.DB {
