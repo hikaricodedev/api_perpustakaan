@@ -12,7 +12,7 @@ type Anggota struct {
 	IdAnggota int    `json:"id_amggota"`
 	Na        string `json:"na"`
 	Nama      string `json:"nama"`
-	Alamat    string `json:"deskripsi"`
+	Alamat    string `json:"alamat"`
 	Foto      string `json:"foto"`
 	TglLahir  string `json:"tgl_lahir"`
 	Editor    string `json:"editor"`
@@ -59,16 +59,22 @@ func GetAnggota(w http.ResponseWriter, r *http.Request) {
 func InsertAnggota(w http.ResponseWriter, r *http.Request) {
 	db := config.SetupDB()
 
-	na := r.FormValue("na")
-	nama_anggota := r.FormValue("nama_anggota")
-	alamat := r.FormValue("alamat")
-	foto := r.FormValue("foto")
-	tgl_lahir := r.FormValue("tgl_lahir")
+	var anggotaNew Anggota
+	errNew := json.NewDecoder(r.Body).Decode(&anggotaNew)
+	if errNew != nil {
+		http.Error(w, errNew.Error(), http.StatusBadRequest)
+	}
+
+	na := anggotaNew.Na
+	nama_anggota := anggotaNew.Nama
+	alamat := anggotaNew.Alamat
+	foto := anggotaNew.Foto
+	tgl_lahir := anggotaNew.TglLahir
 	creator := "user"
 	editor := "user"
 	var lastID int
 
-	insertQuery := "INSERT INTO anggota(na, nama_anggota, alamat, foto, tgl_lahir, creator, editor) VALUES ($1, $2 , $3 , $4, $5 , $6 , $7 , $8) returning id_buku"
+	insertQuery := "INSERT INTO anggota(na, nama, alamat, foto, tgl_lahir, creator, editor) VALUES ($1, $2 , $3 , $4, $5 , $6 , $7) returning id_anggota"
 
 	err := db.QueryRow(insertQuery, na, nama_anggota, alamat, foto, tgl_lahir, creator, editor).Scan(&lastID)
 
@@ -120,7 +126,7 @@ func UpdateAnggota(w http.ResponseWriter, r *http.Request) {
 	editor := "user"
 	var lastID int
 
-	insertQuery := "UPDATE anggota SET na = $1 , nama_anggota = $2 , alamat = $3 , foto = $4 , tgl_lahir = $5 , editor = $6 WHERE id_buku = $7 returning id_buku "
+	insertQuery := "UPDATE anggota SET na = $1 , nama = $2 , alamat = $3 , foto = $4 , tgl_lahir = $5 , editor = $6 WHERE id_buku = $7 returning id_buku "
 
 	err := db.QueryRow(insertQuery, na, nama_anggota, alamat, foto, tgl_lahir, editor, id_anggota).Scan(&lastID)
 
