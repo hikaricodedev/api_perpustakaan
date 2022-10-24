@@ -23,6 +23,6 @@ func main() {
 	router.HandleFunc("/anggota", models.InsertAnggota).Methods("POST")
 	router.HandleFunc("/anggota/delete", models.DeleteAnggota).Methods("POST")
 	router.HandleFunc("/anggota/update", models.UpdateAnggota).Methods("POST")
-	fmt.Println("Server at 8080")
+	fmt.Println("Server at 8000")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
