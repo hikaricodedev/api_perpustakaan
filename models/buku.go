@@ -61,15 +61,23 @@ func GetBuku(w http.ResponseWriter, r *http.Request) {
 func InsertBuku(w http.ResponseWriter, r *http.Request) {
 	db := config.SetupDB()
 
-	nama_buku := r.FormValue("nama_buku")
-	kode_buku := r.FormValue("kode_buku")
-	deskripsi := r.FormValue("deskripsi")
-	tags := r.FormValue("tags")
-	penerbit := r.FormValue("penerbit")
-	pengarang := r.FormValue("pengarang")
+	var bukuNew Buku
+	errNew := json.NewDecoder(r.Body).Decode(&bukuNew)
+	if errNew != nil {
+		http.Error(w, errNew.Error(), http.StatusBadRequest)
+	}
+
+	nama_buku := bukuNew.JudulBuku
+	kode_buku := bukuNew.KodeBuku
+	deskripsi := bukuNew.Deskripsi
+	tags := bukuNew.Tags
+	penerbit := bukuNew.Penerbit
+	pengarang := bukuNew.Pengarang
 	creator := "user"
 	editor := "user"
 	var lastID int
+
+	fmt.Println(bukuNew.JudulBuku)
 
 	insertQuery := "INSERT INTO buku(nama_buku , kode_buku , deskripsi , tags , penerbit, pengarang,creator,editor) VALUES ($1, $2 , $3 , $4, $5 , $6 , $7 , $8) returning id_buku"
 
@@ -112,15 +120,21 @@ func DeleteBuku(w http.ResponseWriter, r *http.Request) {
 func UpdateBuku(w http.ResponseWriter, r *http.Request) {
 	db := config.SetupDB()
 
+	var bukuNew Buku
+	errNew := json.NewDecoder(r.Body).Decode(&bukuNew)
+	if errNew != nil {
+		http.Error(w, errNew.Error(), http.StatusBadRequest)
+	}
+
 	id, _ := r.URL.Query()["id_buku"]
 	id_buku := id[0]
 
-	nama_buku := r.FormValue("nama_buku")
-	kode_buku := r.FormValue("kode_buku")
-	deskripsi := r.FormValue("deskripsi")
-	tags := r.FormValue("tags")
-	penerbit := r.FormValue("penerbit")
-	pengarang := r.FormValue("pengarang")
+	nama_buku := bukuNew.JudulBuku
+	kode_buku := bukuNew.KodeBuku
+	deskripsi := bukuNew.Deskripsi
+	tags := bukuNew.Tags
+	penerbit := bukuNew.Penerbit
+	pengarang := bukuNew.Pengarang
 	editor := "user"
 	var lastID int
 
